@@ -18,6 +18,7 @@
  (depends
   (dune (> 2))
   base
+  calendar
   irmin
   irmin-git
   bos

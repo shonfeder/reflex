@@ -8,6 +8,7 @@ authors: ["Shon Feder"]
 depends: [
   "dune" {>= "2.7" & > "2"}
   "base"
+  "calendar"
   "irmin"
   "irmin-git"
   "bos"
