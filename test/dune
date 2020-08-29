@@ -1,5 +1,3 @@
 (test
  (name reflex)
- (libraries irmin bos base)
- (preprocess
-  (pps ppx_irmin ppx_deriving ppx_sexp_conv)))
+ (libraries irmin bos base))
