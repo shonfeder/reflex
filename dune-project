@@ -19,6 +19,7 @@
   (dune (> 2))
   base
   irmin
+  irmin-git
   bos
   ppx_inline_test
   ppx_irmin
