@@ -21,6 +21,7 @@
   calendar
   irmin
   irmin-git
+  irmin-unix
   bos
   ppx_inline_test
   ppx_irmin
