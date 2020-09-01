@@ -1,0 +1,7 @@
+#+TITLE: Design Notes
+
+* TODO Implement view of retro
+* TODO Add keep/stop notes
+* TODO Come up with scheme for organizing speculations on a project
+* TODO Implement CLI
+* TODO Implement browser based UI
