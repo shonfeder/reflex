@@ -7,7 +7,7 @@ maintainer: ["shon@informal.systems"]
 authors: ["Shon Feder"]
 depends: [
   "dune" {>= "2.7" & > "2"}
-  "base"
+  "containers"
   "calendar"
   "irmin"
   "irmin-git"

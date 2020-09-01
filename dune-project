@@ -17,7 +17,8 @@
  (description "TODO")
  (depends
   (dune (> 2))
-  base
+  ; base
+  containers
   calendar
   irmin
   irmin-git
