@@ -19,6 +19,7 @@
   (dune (> 2))
   base
   calendar
+  cmdliner
   irmin
   irmin-git
   irmin-unix
