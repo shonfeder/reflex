@@ -1,0 +1,10 @@
+(rule
+ (alias deps)
+ (deps
+   dune-project
+   reflex.opam)
+ (action
+  (progn
+   (system "git add ../../dune-project ../../reflex.opam || true")
+   (system "git commit -m 'Updating dependencies' || true")
+   (system "opam install . --deps-only --yes"))))
