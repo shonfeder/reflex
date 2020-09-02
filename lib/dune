@@ -1,6 +1,7 @@
 (library
  (inline_tests)
- (name reflex)
+ (public_name reflex)
+ (name lib)
  (libraries irmin irmin-unix irmin-git calendar bos base)
  (preprocess
   (pps ppx_inline_test ppx_irmin ppx_deriving.std ppx_sexp_conv)))
