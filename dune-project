@@ -23,7 +23,6 @@
   irmin
   irmin-git
   irmin-unix
-  kwdcmd
   bos
   ppx_inline_test
   ppx_irmin
