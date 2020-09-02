@@ -23,11 +23,15 @@
   irmin
   irmin-git
   irmin-unix
+  kwdcmd
   bos
   ppx_inline_test
   ppx_irmin
   ppx_deriving
-  ppx_sexp_conv))
+  ppx_sexp_conv
+
+  ; pin-depends
+  kwdcmd))
 
 ;; Local Variables:
 ;; mode: dune
