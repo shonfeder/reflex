@@ -123,26 +123,6 @@ module Project = struct
     let t = List.fold ~init:old ~f:merge_or_add t1 in
     List.fold ~init:t ~f:merge_or_add t2
 
-  (* List.Assoc.find ~equal:String.equal *)
-  (* List.merge ~compare:Speculation.compare t1 t2 *)
-
-  (* let merge ~old t1 t2 =
-   *   let open Irmin.Merge.Infix in
-   *   old () >>=* fun old ->
-   *   let old = Option.value old ~default:List.(hd (sort compare [ t1; t2 ])) in
-   *   if not (same_speculation old t1 && same_speculation t1 t2) then
-   *     Irmin.Merge.conflict "speculation conflict: (%s, %s) (%s, %s) (%s, %s)"
-   *       old.topic old.provenance.author t1.topic t1.provenance.author t2.topic
-   *       t2.provenance.author
-   *   else
-   *     (\* TODO Perf *\)
-   *     let remarks =
-   *       List.concat [ old.remarks; t1.remarks; t2.remarks ]
-   *       |> List.sort_uniq Remark.compare
-   *     in
-   *     (\* TODO Should we preserve the timestamp or anything from t1 and t2? *\)
-   *     Irmin.Merge.ok { old with remarks } *)
-
   let merge = Irmin.Merge.(option (v t merge))
 
   let add_remark t topic remark =
