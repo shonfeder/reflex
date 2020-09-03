@@ -1,7 +1,17 @@
 #+TITLE: Design Notes
 
+* DONE Implement CLI
 * TODO Implement view of retro
 * TODO Add keep/stop notes
 * TODO Come up with scheme for organizing speculations on a project
-* TODO Implement CLI
 * TODO Implement browser based UI
+
+* Terminology
+
+- retro-spect :: "a survey or review of a past course of events or period of time"
+- pro-spect :: "the possibility or likelihood of some future event occurring"
+- retro-dict :: "to utilize present information or ideas to infer or explain (a
+  past event or state of affairs) -- I.e. try to explain why something happened"
+- post-dict :: "To estimate or suppose something which took place in past; to
+  conjecture something that occurred beforehand::"
+- inter-dict :: "an authoritative prohibition."

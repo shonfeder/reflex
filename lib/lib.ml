@@ -6,4 +6,5 @@ module Retro = Retro
 (* FIXME *)
 module Dev = Dev
 module Speculation = Speculation
-module Element = Element
+module Action = Action
+module Tension = Tension

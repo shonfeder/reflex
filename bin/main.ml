@@ -5,7 +5,7 @@ open Dev
 
 let author = "Shon Feder"
 
-let test_path = [ "reflex"; "retro" ]
+let test_path = [ "prototyping" ]
 
 let test () =
   (*FIXME: Handle error *)
@@ -35,11 +35,9 @@ let test () =
 
 open Cmdliner
 
-let action_conv =
-  let open Element in
-  Arg.enum [ ("dict", Action.Dict); ("spect", Action.Spect) ]
+let action_conv = Arg.enum Action.name_map
 
-let tension_cmd (module T : Element.Tension.T) =
+let tension_cmd (module T : Tension.S) =
   let open T in
   Kwdcmd.(
     cmd ~name ~doc:description
@@ -47,7 +45,7 @@ let tension_cmd (module T : Element.Tension.T) =
 
 let retrodict () = raise (Failure "TODO")
 
-let cmds = [ tension_cmd (module Element.Tension.Retro) ]
+let cmds = [ tension_cmd (module Tension.Retro) ]
 
 let handle_result result =
   let report_err err =
