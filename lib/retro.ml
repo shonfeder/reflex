@@ -1,7 +1,7 @@
 open Base
 
-open! Dev
 (** FIXME *)
+open! Dev
 
 let name = "retro"
 
@@ -25,7 +25,7 @@ module Spect = struct
       | `Conflict msg -> `Conflict msg
       | `Test_was _
       | `Too_many_retries _ ->
-          `Unknown
+        `Unknown
     in
     Result.map_error ~f result
 
@@ -43,31 +43,25 @@ module Spect = struct
     match Project.add_speculation proj spec with
     | Error e -> Lwt.return (Error e)
     | Ok proj ->
-        let+ result = Store.set store ~info path proj in
-        lift_write_result result
+      let+ result = Store.set store ~info path proj in
+      lift_write_result result
 
   let add_remark store path topic remark =
     let open Lwt.Syntax in
     let* proj = Store.find store path in
     match proj with
-    | None      -> Lwt.return (Error (`Remark_not_found_at_path path))
+    | None -> Lwt.return (Error (`Remark_not_found_at_path path))
     | Some proj -> (
-        let info = info "Adding new remark to speculation topic %s" topic in
-        match Project.add_remark proj topic remark with
-        | Error err -> Lwt_result.fail err
-        | Ok proj   ->
-            let+ result = Store.set store ~info path proj in
-            lift_write_result result )
-
-  let load path =
-    let open Lwt.Syntax in
-    let* repo = Irmin_git.config ~bare:true path |> Store.Repo.v in
-    let+ master = Store.master repo in
-    Ok master
+      let info = info "Adding new remark to speculation topic %s" topic in
+      match Project.add_remark proj topic remark with
+      | Error err -> Lwt_result.fail err
+      | Ok proj ->
+        let+ result = Store.set store ~info path proj in
+        lift_write_result result )
 
   let actualize _ctxt = raise (Failure "TODO")
 end
 
 let act : Tension_intf.act = function
-  | Action.Dict  -> Ok (Dict.actualize ())
+  | Action.Dict -> Ok (Dict.actualize ())
   | Action.Spect -> Ok (Spect.actualize ())

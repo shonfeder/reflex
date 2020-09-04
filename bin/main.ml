@@ -7,10 +7,10 @@ let author = "Shon Feder"
 
 let test_path = [ "prototyping" ]
 
-let test () =
+let test (context : Context.t) =
   (*FIXME: Handle error *)
   let open Lwt_result.Syntax in
-  let* store = Retro.Spect.load "/tmp/reflex/test" in
+  let store = context.store in
   let topic = "Implemented basic read/write via Irmin library" in
   let spec = Speculation.v ~topic ~dynamic:Dynamic.Celebration ~author () in
   let* () = Retro.Spect.add_speculation store test_path spec in
@@ -53,22 +53,21 @@ let handle_result result =
     | `Conflict msg -> Printf.eprintf "conlict: %s\n" msg
     | `Invalid_topic msg -> Printf.eprintf "invalid topic: %s\n" msg
     | `Remark_not_found_at_path path ->
-        Printf.eprintf "remark not found at path: %s\n" (String.concat "/" path)
+      Printf.eprintf "remark not found at path: %s\n" (String.concat "/" path)
     | `Speculation_already_exists Speculation.{ topic; _ } ->
-        Printf.eprintf "speculation exists: %s\n" topic
+      Printf.eprintf "speculation exists: %s\n" topic
     | `Unknown -> Printf.eprintf "unknown\n"
   in
   match result with
-  | Ok ()     -> ()
+  | Ok () -> ()
   | Error err ->
-      report_err err;
-      exit 3
+    report_err err;
+    exit 3
 
 let main () =
-  let open Lwt.Syntax in
-  let* result = test () in
-  match result with
-  | Error e -> Lwt_result.fail e
-  | Ok ()   -> Lwt_result.return @@ Kwdcmd.Exec.select ~name:"reflex" cmds
+  let open Lwt_result.Syntax in
+  let* context = Context.load "/tmp/reflex/test" in
+  let+ () = test context in
+  Kwdcmd.Exec.select ~name:"reflex" cmds
 
 let () = Lwt_main.run (main ()) |> handle_result
