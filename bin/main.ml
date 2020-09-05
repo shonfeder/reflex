@@ -3,14 +3,11 @@ open Lib
 (* FIXME *)
 open Dev
 
-let author = "Shon Feder"
-
 let test_path = [ "prototyping" ]
 
-let test (context : Context.t) =
+let test Context.{ store; user = author } =
   (*FIXME: Handle error *)
   let open Lwt_result.Syntax in
-  let store = context.store in
   let topic = "Implemented basic read/write via Irmin library" in
   let spec = Note.v ~topic ~dynamic:Dynamic.Celebration ~author () in
   let* () = Retro.Spect.add_speculation store test_path spec in
