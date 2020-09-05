@@ -15,7 +15,7 @@ let test (context : Context.t) =
   let spec = Speculation.v ~topic ~dynamic:Dynamic.Celebration ~author () in
   let* () = Retro.Spect.add_speculation store test_path spec in
   let* store' =
-    Retro.Spect.Store.clone ~src:store ~dst:"test_branch" |> Lwt_result.ok
+    Context.Store.clone ~src:store ~dst:"test_branch" |> Lwt_result.ok
   in
   let remark =
     Remark.v ~author
@@ -30,7 +30,7 @@ let test (context : Context.t) =
   in
   let* () = Retro.Spect.add_remark store' test_path topic remark' in
   let info = Retro.Spect.info "Merging test_branch into master" in
-  Retro.Spect.Store.merge_into ~info ~into:store store'
+  Context.Store.merge_into ~info ~into:store store'
   |> Lwt.map Retro.Spect.lift_write_result
 
 open Cmdliner

@@ -12,10 +12,6 @@ module Dict = struct
 end
 
 module Spect = struct
-  module Store = Irmin_unix.Git.FS.KV (Project)
-
-  let config = Irmin_git.config ~bare:true "/tmp/reflex/test"
-
   let info fmt =
     let author = Option.value (Sys.getenv "USER") ~default:"unknown user" in
     Irmin_unix.info ~author fmt
@@ -32,23 +28,23 @@ module Spect = struct
   let new_project store path =
     let open Lwt.Syntax in
     let info = info "Creating a new project" in
-    let+ result = Store.set store ~info path Project.empty in
+    let+ result = Context.Store.set store ~info path Project.empty in
     lift_write_result result
 
   let add_speculation store path spec =
     let open Lwt.Syntax in
     let info = info "Adding a new speculation" in
-    let* result = Store.find store path in
+    let* result = Context.Store.find store path in
     let proj = Option.value result ~default:Project.empty in
     match Project.add_speculation proj spec with
     | Error e -> Lwt.return (Error e)
     | Ok proj ->
-      let+ result = Store.set store ~info path proj in
+      let+ result = Context.Store.set store ~info path proj in
       lift_write_result result
 
   let add_remark store path topic remark =
     let open Lwt.Syntax in
-    let* proj = Store.find store path in
+    let* proj = Context.Store.find store path in
     match proj with
     | None -> Lwt.return (Error (`Remark_not_found_at_path path))
     | Some proj -> (
@@ -56,7 +52,7 @@ module Spect = struct
       match Project.add_remark proj topic remark with
       | Error err -> Lwt_result.fail err
       | Ok proj ->
-        let+ result = Store.set store ~info path proj in
+        let+ result = Context.Store.set store ~info path proj in
         lift_write_result result )
 
   let actualize _ctxt = raise (Failure "TODO")

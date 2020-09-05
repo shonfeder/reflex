@@ -18,10 +18,10 @@ let merge_or_add_notes notes ((topic : Topic.t), (s : Speculation.t)) =
   let equal = String.equal in
   let f t =
     match find t topic with
-    | None    -> Irmin.Merge.ok (Assoc.add t ~equal topic s)
+    | None -> Irmin.Merge.ok (Assoc.add t ~equal topic s)
     | Some s' ->
-        let* s'' = Speculation.merge s s' in
-        Irmin.Merge.ok (add t s.topic s'')
+      let* s'' = Speculation.merge s s' in
+      Irmin.Merge.ok (add t s.topic s'')
   in
   let* notes' = notes in
   f notes'
@@ -36,17 +36,14 @@ let merge ~old t1 t2 =
   let+ notes = merge_notes old.notes t1.notes t2.notes in
   { notes }
 
-(* let t = List.fold ~init:old ~f:merge_or_add t1 in
- * List.fold ~init:t ~f:merge_or_add t2 *)
-
 let merge = Irmin.Merge.(option (v t merge))
 
 let add_remark (t : t) topic remark =
   match find t.notes topic with
-  | None   -> Error (`Invalid_topic topic)
+  | None -> Error (`Invalid_topic topic)
   | Some s -> Ok { notes = add t.notes topic (Speculation.add_remark s remark) }
 
 let add_speculation (t : t) (spec : Speculation.t) =
   match find t.notes spec.topic with
-  | None   -> Ok { notes = add t.notes spec.topic spec }
+  | None -> Ok { notes = add t.notes spec.topic spec }
   | Some s -> Error (`Speculation_already_exists s)
