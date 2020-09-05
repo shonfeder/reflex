@@ -1,4 +1,4 @@
-module type S = Tension_intf.S
+include Tension_intf
 
 module Retro : Tension_intf.S = Retro
 
