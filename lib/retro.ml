@@ -5,7 +5,7 @@ open! Dev
 
 let name = "retro"
 
-let description = "towards the back"
+let description = "tending towards the back"
 
 module Dict = struct
   let actualize _ctxt = raise (Failure "TODO")
@@ -61,3 +61,4 @@ end
 let act : Tension_intf.act = function
   | Action.Dict -> Ok (Dict.actualize ())
   | Action.Spect -> Ok (Spect.actualize ())
+  | a -> Tension_intf.unsupported a

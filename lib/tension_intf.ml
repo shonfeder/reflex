@@ -1,4 +1,11 @@
-type act = Action.t -> (unit, Rresult.R.msg) Result.t
+type err =
+  [ Rresult.R.msg
+  | `Unsupported of Action.t
+  ]
+
+type act = Action.t -> (unit, err) Result.t
+
+let unsupported action = Error (`Unsupported action)
 
 module type S = sig
   (* type t *)
