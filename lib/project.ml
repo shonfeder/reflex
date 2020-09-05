@@ -6,7 +6,7 @@ let find = Assoc.find ~equal:String.equal
 
 let add = Assoc.add ~equal:String.equal
 
-type notes = (Topic.t * Speculation.t) list [@@deriving irmin]
+type notes = (Topic.t * Note.t) list [@@deriving irmin]
 
 type t = { notes : notes } [@@deriving irmin]
 
@@ -14,13 +14,13 @@ let empty = { notes = [] }
 
 let ( let* ), ( let+ ) = Irmin.Merge.Infix.(( >>=* ), ( >|=* ))
 
-let merge_or_add_notes notes ((topic : Topic.t), (s : Speculation.t)) =
+let merge_or_add_notes notes ((topic : Topic.t), (s : Note.t)) =
   let equal = String.equal in
   let f t =
     match find t topic with
     | None -> Irmin.Merge.ok (Assoc.add t ~equal topic s)
     | Some s' ->
-      let* s'' = Speculation.merge s s' in
+      let* s'' = Note.merge s s' in
       Irmin.Merge.ok (add t s.topic s'')
   in
   let* notes' = notes in
@@ -41,9 +41,9 @@ let merge = Irmin.Merge.(option (v t merge))
 let add_remark (t : t) topic remark =
   match find t.notes topic with
   | None -> Error (`Invalid_topic topic)
-  | Some s -> Ok { notes = add t.notes topic (Speculation.add_remark s remark) }
+  | Some s -> Ok { notes = add t.notes topic (Note.add_remark s remark) }
 
-let add_speculation (t : t) (spec : Speculation.t) =
+let add_speculation (t : t) (spec : Note.t) =
   match find t.notes spec.topic with
   | None -> Ok { notes = add t.notes spec.topic spec }
   | Some s -> Error (`Speculation_already_exists s)

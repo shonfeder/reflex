@@ -12,7 +12,7 @@ let test (context : Context.t) =
   let open Lwt_result.Syntax in
   let store = context.store in
   let topic = "Implemented basic read/write via Irmin library" in
-  let spec = Speculation.v ~topic ~dynamic:Dynamic.Celebration ~author () in
+  let spec = Note.v ~topic ~dynamic:Dynamic.Celebration ~author () in
   let* () = Retro.Spect.add_speculation store test_path spec in
   let* store' =
     Context.Store.clone ~src:store ~dst:"test_branch" |> Lwt_result.ok
@@ -54,7 +54,7 @@ let handle_result result =
     | `Invalid_topic msg -> Printf.eprintf "invalid topic: %s\n" msg
     | `Remark_not_found_at_path path ->
       Printf.eprintf "remark not found at path: %s\n" (String.concat "/" path)
-    | `Speculation_already_exists Speculation.{ topic; _ } ->
+    | `Speculation_already_exists Note.{ topic; _ } ->
       Printf.eprintf "speculation exists: %s\n" topic
     | `Unknown -> Printf.eprintf "unknown\n"
   in
