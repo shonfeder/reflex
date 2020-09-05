@@ -58,7 +58,8 @@ module Spect = struct
   let actualize _ctxt = raise (Failure "TODO")
 end
 
-let act : Tension_intf.act = function
+let act : Tension_intf.act =
+ fun _ctxt -> function
   | Action.Dict -> Ok (Dict.actualize ())
   | Action.Spect -> Ok (Spect.actualize ())
   | a -> Tension_intf.unsupported a

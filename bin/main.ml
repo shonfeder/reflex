@@ -35,7 +35,7 @@ open Cmdliner
 
 let action_conv = Arg.enum Action.name_map
 
-let tension_cmd (module T : Tension.S) =
+let tension_cmd ctxt (module T : Tension.S) =
   let handle_err : Tension.err -> Rresult.R.msg = function
     | `Msg m -> `Msg m
     | `Unsupported action ->
@@ -45,7 +45,7 @@ let tension_cmd (module T : Tension.S) =
       in
       `Msg msg
   in
-  let action a = T.act a |> Result.map_error ~f:handle_err in
+  let action a = T.act ctxt a |> Result.map_error ~f:handle_err in
   let open T in
   Kwdcmd.(
     cmd ~name ~doc:description
@@ -53,7 +53,7 @@ let tension_cmd (module T : Tension.S) =
 
 let retrodict () = raise (Failure "TODO")
 
-let cmds = [ tension_cmd (module Tension.Retro) ]
+let cmds ctxt = [ tension_cmd ctxt (module Tension.Retro) ]
 
 let handle_result result =
   let report_err err =
@@ -77,6 +77,6 @@ let main () =
   let open Lwt_result.Syntax in
   let* context = Context.load "/tmp/reflex/test" in
   let+ () = test context in
-  Kwdcmd.Exec.select ~name:"reflex" cmds
+  Kwdcmd.Exec.select ~name:"reflex" (cmds context)
 
 let () = Lwt_main.run (main ()) |> handle_result

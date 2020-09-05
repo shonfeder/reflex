@@ -3,7 +3,7 @@ type err =
   | `Unsupported of Action.t
   ]
 
-type act = Action.t -> (unit, err) Result.t
+type act = Context.t -> Action.t -> (unit, err) Result.t
 
 let unsupported action = Error (`Unsupported action)
 
