@@ -37,23 +37,32 @@ let action_conv = Arg.enum Action.name_map
 
 let tension_cmd ctxt (module T : Tension.S) =
   let handle_err : Tension.err -> Rresult.R.msg = function
-    | `Msg m -> `Msg m
+    | `Msg m              -> `Msg m
     | `Unsupported action ->
-      let msg =
-        Printf.sprintf "Action %s unsupported for tension %s"
-          (Action.to_string action) T.name
-      in
-      `Msg msg
+        let msg =
+          Printf.sprintf "Action %s unsupported for tension %s"
+            (Action.to_string action) T.name
+        in
+        `Msg msg
   in
-  let action a = T.act ctxt a |> Result.map_error ~f:handle_err in
+  let action a data =
+    let open Lwt.Syntax in
+    let+ result = T.act ~ctxt ?data a in
+    Result.map_error result ~f:handle_err
+  in
   let open T in
   Kwdcmd.(
     cmd ~name ~doc:description
-      (Term.const action $ Required.pos "ACTION" ~conv:action_conv ~nth:0 ()))
+      ( Term.const action
+      $ Required.pos "ACTION" ~conv:action_conv ~nth:0 ()
+      $ Optional.pos "DATA" ~conv:Arg.string ~nth:1 () ))
 
 let retrodict () = raise (Failure "TODO")
 
-let cmds ctxt = [ tension_cmd ctxt (module Tension.Retro) ]
+let cmds ctxt =
+  [ tension_cmd ctxt (module Tension.Retro)
+  ; tension_cmd ctxt (module Tension.Re)
+  ]
 
 let handle_result result =
   let report_err err =
@@ -61,17 +70,18 @@ let handle_result result =
     | `Conflict msg -> Stdio.eprintf "conlict: %s\n" msg
     | `Invalid_topic msg -> Stdio.eprintf "invalid topic: %s\n" msg
     | `Remark_not_found_at_path path ->
-      Stdio.eprintf "remark not found at path: %s\n"
-        (String.concat ~sep:"/" path)
+        Stdio.eprintf "remark not found at path: %s\n"
+          (String.concat ~sep:"/" path)
     | `Speculation_already_exists Note.{ topic; _ } ->
-      Stdio.eprintf "speculation exists: %s\n" topic
+        Stdio.eprintf "speculation exists: %s\n" topic
     | `Unknown -> Stdio.eprintf "unknown\n"
   in
   match result with
-  | Ok () -> ()
+  | Ok ()     -> ()
   | Error err ->
-    report_err err;
-    Caml.exit 3
+      Stdio.eprintf "[error] ";
+      report_err err;
+      Caml.exit 3
 
 let main () =
   let open Lwt_result.Syntax in

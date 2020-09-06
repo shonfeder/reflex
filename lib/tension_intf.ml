@@ -3,9 +3,10 @@ type err =
   | `Unsupported of Action.t
   ]
 
-type act = Context.t -> Action.t -> (unit, err) Result.t
+type act =
+  ctxt:Context.t -> ?data:string -> Action.t -> (unit, err) Lwt_result.t
 
-let unsupported action = Error (`Unsupported action)
+let unsupported action = Lwt_result.fail (`Unsupported action)
 
 module type S = sig
   (* type t *)
