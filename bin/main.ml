@@ -85,8 +85,8 @@ let handle_result result =
 
 let main () =
   let open Lwt_result.Syntax in
-  let* context = Context.load "/tmp/reflex/test" in
-  let+ () = test context in
+  let+ context = Context.load "/tmp/reflex/test" in
+  (* let+ () = test context in *)
   Kwdcmd.Exec.select ~name:"reflex" (cmds context)
 
 let () = Lwt_main.run (main ()) |> handle_result

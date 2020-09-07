@@ -36,20 +36,26 @@ module Mark = struct
 
   let actualize (ctxt : Context.t) data =
     let open Lwt.Syntax in
+    let* () = Lwt_io.printl "Actualize" in
     let+ result =
       match Data.of_string data with
-      | Error e -> Lwt.return (Error e)
+      | Error e ->
+          let* () = Lwt_io.printl "Parse error" in
+          Lwt.return (Error e)
       | Ok { project; topic; dynamic; content } -> (
+          let* () = Lwt_io.printl "Parse Ok" in
           let author = ctxt.user in
           let remark = Remark.v ~author ~content in
           let note = Note.v ~remark ~topic ~dynamic ~author () in
-          let* proj =
-            Context.Store.find ctxt.store project
-            |> Lwt.map (Option.value ~default:Project.empty)
-          in
+          let* () = Lwt_io.printl "Adding spec..." in
+          let* proj = Context.Store.find ctxt.store project in
+          let proj = Option.value ~default:Project.empty proj in
           match Project.add_speculation proj note with
-          | Error e -> Lwt.return (Error e)
+          | Error e ->
+              let* () = Lwt_io.printl "Speculation add error" in
+              Lwt.return (Error e)
           | Ok proj ->
+              let* () = Lwt_io.printl "HERE" in
               let info = info ctxt "Adding a new remark" in
               let+ result = Context.Store.set ctxt.store ~info project proj in
               lift_write_result result )
